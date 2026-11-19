@@ -4,7 +4,7 @@ globalThis.installSkills = function ({ getState, save, render, showToast, openAd
   area.className = 'panel skill-workspace';
   area.innerHTML = `
     <div class="panel-head"><div><h2>听说读写工作台</h2><p id="skillLanguage"></p></div>
-      <button class="button" id="openLibrary">导入词书 / 材料</button></div>
+      <div class="skill-tabs"><button class="button" id="openLibrary">导入词书 / 材料</button><button class="button" id="openMaterialTests">材料测验</button></div></div>
     <div class="field"><label for="materialChoice">练习材料</label><select id="materialChoice"></select></div>
     <div class="skill-tabs" role="group" aria-label="练习类型">
       <button class="button" data-skill="listen">听 · 听写</button><button class="button" data-skill="speak">说 · 复述</button>
@@ -25,6 +25,8 @@ globalThis.installSkills = function ({ getState, save, render, showToast, openAd
   const $ = id => document.getElementById(id);
   let skill = 'listen', selected = '', pending = null, recorder = null, stream = null, recordingUrl = null;
   let requestVersion = 0;
+  const materialTests = installMaterialTests({getState,save,showToast});
+  $('openMaterialTests').onclick = () => document.querySelector('[data-view="quiz"]').click();
   function material() { return getState().materials.find(item => item.id === selected); }
   function entry() {
     const state = getState();
@@ -43,6 +45,7 @@ globalThis.installSkills = function ({ getState, save, render, showToast, openAd
   }
   function refresh() {
     stop();
+    materialTests.refresh();
     const state = getState();
     state.materials ||= core.starter(state.language).materials;
     $('skillLanguage').textContent = state.language + ' · 每天听、说、读、写各练一次';
@@ -234,8 +237,18 @@ globalThis.installSkills = function ({ getState, save, render, showToast, openAd
     const state = getState(), before = state[pending.mode];
     const rows = pending.mode === 'words' ? pending.rows.map(item => ({...item,id:crypto.randomUUID(),stage:0,learnedAt:null,nextReviewAt:Date.now(),lastReviewedAt:null,reviewCount:0,createdAt:Date.now()})) : pending.rows;
     state[pending.mode] = [...before,...rows];
-    try { save(); } catch { state[pending.mode] = before; return showToast('存储空间不足，本次导入已撤回，请减少文件大小'); }
-    const count = rows.length; pending = null; dialog.close(); render(); refresh(); showToast('已导入 ' + count + ' 条资料');
+    const previousTests = [...(state.materialTests || [])];
+    let questionCount;
+    try {
+      questionCount = MaterialTests.addImported(state,pending.mode,rows);
+      save();
+    } catch {
+      state[pending.mode] = before;
+      state.materialTests = previousTests;
+      return showToast('导入未完成，已撤回本次资料与题组，请检查设备存储空间');
+    }
+    const count = rows.length; pending = null; dialog.close(); render(); refresh();
+    showToast('已导入 ' + count + ' 条资料，并生成 ' + questionCount + ' 道题，请打开材料测验');
   };
   $('materialChoice').onchange = event => { stop(); selected = event.target.value; draw(); };
   area.querySelectorAll('[data-skill]').forEach(button => button.onclick = () => { stop(); skill = button.dataset.skill; draw(); });
