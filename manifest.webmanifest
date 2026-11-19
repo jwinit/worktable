@@ -1,0 +1,14 @@
+{
+  "name": "语言学习工作台 · Lingua 日课",
+  "short_name": "Lingua 日课",
+  "description": "结合间隔复习与费曼输出练习的语言学习工作台",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8f7",
+  "theme_color": "#f7f8fa",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
