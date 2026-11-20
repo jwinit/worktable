@@ -1,5 +1,5 @@
-const CACHE='lingua-workbench-v0.3.0';
-const SHELL=['./','index.html','app.js','core.js','features.js','material-tests.js','manifest.webmanifest','icon.svg'];
+const CACHE='lingua-workbench-v0.4.0';
+const SHELL=['./','index.html','workbench.html','sprint.css','sprint-data.js','sprint-model.js','sprint.js','app.js','core.js','features.js','material-tests.js','manifest.webmanifest','icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('lingua-workbench-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
