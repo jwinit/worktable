@@ -17,8 +17,8 @@
     {word:'subtle',pron:'/ˈsʌtəl/',meaning:'微妙的；不易察觉的',example:'There is a subtle difference in tone.',usage:'a subtle difference / change',tags:['形容词','阅读'],stage:0,learnedAt:null,nextReviewAt:today,lastReviewedAt:null,reviewCount:0,createdAt:today,explanation:''},
     {word:'resilient',pron:'/rɪˈzɪliənt/',meaning:'有韧性的；能迅速恢复的',example:'Young plants are surprisingly resilient.',usage:'a resilient person / community',tags:['形容词','进阶'],stage:0,learnedAt:null,nextReviewAt:today,lastReviewedAt:null,reviewCount:0,createdAt:today,explanation:''},
     {word:'reinforce',pron:'/ˌriːɪnˈfɔːrs/',meaning:'加强；巩固；强化',example:'Regular practice reinforces what you learn.',usage:'reinforce a habit / memory / idea',tags:['动词','学习'],stage:0,learnedAt:null,nextReviewAt:today,lastReviewedAt:null,reviewCount:0,createdAt:today,explanation:''}
-  ].map(w=>({...w,id:crypto.randomUUID()}))};
-  const defaultState=()=>({words:sample(),streak:0,lastStudyDate:null,studyDays:[],weeklyMinutes:0,weeklyData:[10,15,0,20,12,0,0],quizCompletedOn:null,reminderEnabled:false,reminderTime:'20:00',remindedOn:null,language:'英语 · English'});
+  ].map(w=>({...w,id:crypto.randomUUID(),stage:0,learnedAt:null,lastReviewedAt:null,reviewCount:0,createdAt:now,nextReviewAt:today}))};
+  const defaultState=()=>({words:sample(),streak:0,lastStudyDate:null,studyDays:[],weeklyMinutes:0,weeklyData:[0,0,0,0,0,0,0],quizCompletedOn:null,reminderEnabled:false,reminderTime:'20:00',remindedOn:null,language:'英语 · English'});
   let workspace;
   function createProfile(language) {
     const profile = defaultState();
